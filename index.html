@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Portofolio Paskalia Melisa: asisten lab komputer, pengembang IoT ESP32 dan Machine Learning, videografer, dan desainer grafis.">
+    <title>Paskalia Melisa – Portofolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Sans:wght@400..700&display=swap">
+    <link rel="stylesheet" href="style.css">
+    <script>
+        (function () {
+            var root = document.documentElement;
+            var stored = null;
+            try { stored = localStorage.getItem("selected-theme"); } catch (error) {}
+            var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+            root.dataset.theme = stored || (prefersDark ? "dark" : "light");
+            root.classList.add("js");
+        })();
+    </script>
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <svg class="sprite" aria-hidden="true" focusable="false">
+        <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></symbol>
+        <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol>
+        <symbol id="i-code" viewBox="0 0 24 24"><path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/></symbol>
+        <symbol id="i-award" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.48 12.89 17 22l-5-3-5 3 1.52-9.11"/></symbol>
+        <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></symbol>
+        <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></symbol>
+        <symbol id="i-instagram" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><path d="M17.5 6.5h.01"/></symbol>
+        <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+        <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+        <symbol id="i-external" viewBox="0 0 24 24"><path d="M7 7h10v10M7 17 17 7"/></symbol>
+        <symbol id="i-close" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+        <symbol id="i-prev" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+        <symbol id="i-next" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+        <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></symbol>
+        <symbol id="i-expand" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/></symbol>
+    </svg>
+
+    <div class="intro" id="intro" role="dialog" aria-modal="true" aria-labelledby="intro-title">
+        <div class="intro__panel">
+            <h2 class="intro__title" id="intro-title">Menangkan satu ronde untuk masuk</h2>
+            <p class="intro__status" id="intro-status" aria-live="polite"></p>
+            <div class="board" id="board" role="group" aria-label="Papan tic-tac-toe"></div>
+            <div class="intro__actions">
+                <button class="button" type="button" id="intro-restart" hidden>Main lagi</button>
+                <button class="button" type="button" id="intro-enter">Lewati game</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="backdrop" aria-hidden="true">
+        <span class="backdrop__pulse"></span>
+        <span class="backdrop__pulse"></span>
+        <span class="backdrop__pulse"></span>
+    </div>
+    <div class="cursor" id="cursor" aria-hidden="true">
+        <span class="cursor__ring"></span>
+        <span class="cursor__dot"></span>
+    </div>
+
+    <div class="site" id="site">
+        <header class="nav-wrap">
+            <nav class="nav" aria-label="Navigasi utama">
+                <span class="nav__indicator" aria-hidden="true"></span>
+                <a class="nav__link" href="#about">About</a>
+                <a class="nav__link" href="#portfolio">Portfolio</a>
+                <a class="nav__link" href="#contact">Contact</a>
+                <button class="nav__theme" type="button" id="theme-toggle" aria-label="Ganti tema">
+                    <svg class="icon nav__sun"><use href="#i-sun"/></svg>
+                    <svg class="icon nav__moon"><use href="#i-moon"/></svg>
+                </button>
+            </nav>
+        </header>
+
+        <main>
+            <section class="section hero" id="about">
+                <div class="hero__layout">
+                    <div class="hero__copy">
+                        <h1 class="hero__title" tabindex="-1" data-reveal>Halo, saya Paskalia Melisa</h1>
+                        <p class="hero__lead" data-reveal>Mahasiswa &amp; Asisten Lab Komputer yang berfokus pada teknologi IoT berbasis ESP32, Machine Learning, serta aktif sebagai videografer dan desainer grafis freelance.</p>
+                        <div class="hero__actions" data-reveal>
+                            <a class="button button--primary" href="CV_Paskalia_Melisa.pdf" download>
+                                <svg class="icon icon--sm"><use href="#i-download"/></svg>
+                                Unduh CV
+                            </a>
+                            <a class="button" href="#portfolio">Lihat proyek</a>
+                        </div>
+                    </div>
+
+                    <div class="lanyard" id="lanyard" data-reveal>
+                        <svg class="lanyard__rope" aria-hidden="true">
+                            <path class="lanyard__strap" id="lanyard-path"/>
+                            <circle class="lanyard__pin" id="lanyard-pin" r="6"/>
+                        </svg>
+                        <div class="id-card" id="id-card">
+                            <span class="id-card__slot"></span>
+                            <div class="id-card__photo">
+                                <img src="foto-paskalia.jpg" alt="Foto Paskalia Melisa" draggable="false">
+                            </div>
+                            <div class="id-card__body">
+                                <span class="id-card__role">Lab assistant</span>
+                                <p class="id-card__name">Paskalia Melisa</p>
+                                <p class="id-card__field">IoT &amp; Creative Media</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="resume">
+                    <div class="resume__col">
+                        <h2 class="resume__title" data-reveal>Education</h2>
+                        <ol class="timeline" data-stagger>
+                            <li class="timeline__item">
+                                <p class="timeline__date">2021 – Sekarang</p>
+                                <h3 class="timeline__title">Universitas Gunadarma</h3>
+                                <p class="timeline__meta">S1 Teknik Informatika / Sistem Informasi</p>
+                            </li>
+                            <li class="timeline__item">
+                                <p class="timeline__date">2018 – 2021</p>
+                                <h3 class="timeline__title">SMA Negeri X</h3>
+                                <p class="timeline__meta">MIPA / IPA</p>
+                            </li>
+                        </ol>
+                    </div>
+
+                    <div class="resume__col">
+                        <h2 class="resume__title" data-reveal>Experience</h2>
+                        <div class="timeline-scroll" data-scroll-limit="2">
+                            <ol class="timeline" data-stagger>
+                                <li class="timeline__item">
+                                    <p class="timeline__date">2023 – Sekarang</p>
+                                    <h3 class="timeline__title">Asisten Laboratorium Komputer</h3>
+                                    <p class="timeline__meta">LePKom / Laboratorium Komputer</p>
+                                </li>
+                                <li class="timeline__item">
+                                    <p class="timeline__date">2022 – Sekarang</p>
+                                    <h3 class="timeline__title">Freelance Videografer &amp; Editor</h3>
+                                    <p class="timeline__meta">Proyek kreatif &amp; dokumentasi event</p>
+                                </li>
+                                <li class="timeline__item">
+                                    <p class="timeline__date">2022 – 2023</p>
+                                    <h3 class="timeline__title">Kontributor Divisi Kreatif BEM</h3>
+                                    <p class="timeline__meta">Organisasi mahasiswa kampus</p>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" id="portfolio">
+                <div class="section__head" data-stagger>
+                    <h2 class="section__title">Portofolio</h2>
+                    <p class="section__lead">Proyek IoT dan machine learning, karya visual, sertifikat, serta tools yang saya gunakan.</p>
+                </div>
+
+                <div class="tabs" data-tabs>
+                    <div class="tabs__list" role="tablist" aria-label="Kategori portofolio" data-reveal>
+                        <span class="tabs__indicator" aria-hidden="true"></span>
+                        <button class="tabs__tab" type="button" role="tab" id="tab-projects" aria-controls="panel-projects" aria-selected="true">
+                            <svg class="icon"><use href="#i-code"/></svg>Projects
+                        </button>
+                        <button class="tabs__tab" type="button" role="tab" id="tab-certificates" aria-controls="panel-certificates" aria-selected="false" tabindex="-1">
+                            <svg class="icon"><use href="#i-award"/></svg>Certificates
+                        </button>
+                        <button class="tabs__tab" type="button" role="tab" id="tab-skills" aria-controls="panel-skills" aria-selected="false" tabindex="-1">
+                            <svg class="icon"><use href="#i-bolt"/></svg>Skills
+                        </button>
+                    </div>
+
+                    <div class="tabs__panel" role="tabpanel" id="panel-projects" aria-labelledby="tab-projects">
+                        <div class="projects">
+                            <div class="project-group">
+                                <h3 class="project-group__title" data-reveal>Proyek IT &amp; Teknologi</h3>
+                                <div class="project-grid" data-stagger="line">
+                                    <article class="project-card">
+                                        <div class="project-card__image">
+                                            <img src="project-iot.jpg" alt="Sistem Monitoring Likuifaksi IoT" loading="lazy">
+                                        </div>
+                                        <div class="project-card__body">
+                                            <h4 class="project-card__title">Sistem Monitoring Likuifaksi IoT</h4>
+                                            <p class="project-card__text">Pemantauan pergeseran tanah dan likuifaksi secara real-time menggunakan mikrokontroler ESP32 dan sensor MPU6050 via MQTT ThingsBoard.</p>
+                                            <ul class="tags" aria-label="Teknologi">
+                                                <li>ESP32</li><li>MPU6050</li><li>MQTT</li><li>ThingsBoard</li>
+                                            </ul>
+                                            <div class="project-card__actions">
+                                                <a class="button button--primary project-card__btn" href="https://github.com/username/project-iot" target="_blank" rel="noopener">
+                                                    Lihat Proyek <svg class="icon icon--sm"><use href="#i-external"/></svg>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </article>
+
+                                    <article class="project-card">
+                                        <div class="project-card__image">
+                                            <img src="project-ml.jpg" alt="Machine Learning Classification Pipeline" loading="lazy">
+                                        </div>
+                                        <div class="project-card__body">
+                                            <h4 class="project-card__title">Machine Learning Classification Pipeline</h4>
+                                            <p class="project-card__text">Pemodelan algoritma klasifikasi prediktif dengan evaluasi matriks performa dan dashboard interaktif Streamlit.</p>
+                                            <ul class="tags" aria-label="Teknologi">
+                                                <li>Python</li><li>Scikit-Learn</li><li>Streamlit</li>
+                                            </ul>
+                                            <div class="project-card__actions">
+                                                <a class="button button--primary project-card__btn" href="https://github.com/username/project-ml" target="_blank" rel="noopener">
+                                                    Lihat Proyek <svg class="icon icon--sm"><use href="#i-external"/></svg>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </article>
+                                </div>
+                            </div>
+
+                            <div class="project-group">
+                                <h3 class="project-group__title" data-reveal>Proyek Seni &amp; Media Kreatif</h3>
+                                <div class="project-grid" data-stagger="line">
+                                    <article class="project-card">
+                                        <div class="project-card__image">
+                                            <img src="project-aftermovie.jpg" alt="Official Aftermovie Event Kampus & Lab" loading="lazy">
+                                        </div>
+                                        <div class="project-card__body">
+                                            <h4 class="project-card__title">Official Aftermovie Event Kampus &amp; Lab</h4>
+                                            <p class="project-card__text">Dokumentasi video sinematik mencakup shooting, sound design, serta color grading untuk event BEM dan gathering asisten lab.</p>
+                                            <ul class="tags" aria-label="Teknologi">
+                                                <li>Premiere Pro</li><li>After Effects</li>
+                                            </ul>
+                                            <div class="project-card__actions">
+                                                <a class="button button--primary project-card__btn" href="https://youtube.com" target="_blank" rel="noopener">
+                                                    Tonton Video <svg class="icon icon--sm"><use href="#i-external"/></svg>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </article>
+
+                                    <article class="project-card">
+                                        <div class="project-card__image">
+                                            <img src="project-branding.jpg" alt="Visual Branding & Aset Media BEM" loading="lazy">
+                                        </div>
+                                        <div class="project-card__body">
+                                            <h4 class="project-card__title">Visual Branding &amp; Aset Media BEM</h4>
+                                            <p class="project-card__text">Perancangan identitas visual event, sertifikat digital, e-ticket, serta feed Instagram live report.</p>
+                                            <ul class="tags" aria-label="Teknologi">
+                                                <li>Photoshop</li><li>Illustrator</li><li>Figma</li>
+                                            </ul>
+                                            <div class="project-card__actions">
+                                                <a class="button button--primary project-card__btn" href="https://behance.net" target="_blank" rel="noopener">
+                                                    Lihat Galeri <svg class="icon icon--sm"><use href="#i-external"/></svg>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </article>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tabs__panel" role="tabpanel" id="panel-certificates" aria-labelledby="tab-certificates" hidden>
+                        <ul class="certs" data-stagger="tilt">
+                            <li>
+                                <button class="cert" type="button" data-cert data-src="sertifikat-1.jpg" data-caption="Sertifikat Asisten Laboratorium Komputer">
+                                    <span class="cert__frame">
+                                        <img src="sertifikat-1.jpg" alt="" loading="lazy" decoding="async">
+                                        <span class="cert__zoom"><svg class="icon"><use href="#i-expand"/></svg></span>
+                                    </span>
+                                    <span class="cert__name">Sertifikat Asisten Lab LePKom</span>
+                                </button>
+                            </li>
+                            <li>
+                                <button class="cert" type="button" data-cert data-src="sertifikat-2.jpg" data-caption="Sertifikat Workshop IoT">
+                                    <span class="cert__frame">
+                                        <img src="sertifikat-2.jpg" alt="" loading="lazy" decoding="async">
+                                        <span class="cert__zoom"><svg class="icon"><use href="#i-expand"/></svg></span>
+                                    </span>
+                                    <span class="cert__name">Sertifikat Competency IoT</span>
+                                </button>
+                            </li>
+                            <li>
+                                <button class="cert" type="button" data-cert data-src="sertifikat-3.jpg" data-caption="Sertifikat Machine Learning">
+                                    <span class="cert__frame">
+                                        <img src="sertifikat-3.jpg" alt="" loading="lazy" decoding="async">
+                                        <span class="cert__zoom"><svg class="icon"><use href="#i-expand"/></svg></span>
+                                    </span>
+                                    <span class="cert__name">Sertifikat Machine Learning Course</span>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="tabs__panel" role="tabpanel" id="panel-skills" aria-labelledby="tab-skills" hidden>
+                        <div class="skills">
+                            <div class="skill-group">
+                                <h3 class="skill-group__title" data-reveal>Programming &amp; Hardware</h3>
+                                <ul class="skill-list" data-stagger="pop">
+                                    <li><div class="skill"><img class="skill__icon" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg" alt="" loading="lazy"><span class="skill__name">C++</span></div></li>
+                                    <li><div class="skill"><img class="skill__icon" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="" loading="lazy"><span class="skill__name">Python</span></div></li>
+                                    <li><div class="skill"><img class="skill__icon" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/arduino/arduino-original.svg" alt="" loading="lazy"><span class="skill__name">ESP32 / Arduino</span></div></li>
+                                    <li><div class="skill"><img class="skill__icon" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" alt="" loading="lazy"><span class="skill__name">HTML5</span></div></li>
+                                    <li><div class="skill"><img class="skill__icon" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" alt="" loading="lazy"><span class="skill__name">CSS3</span></div></li>
+                                    <li><div class="skill"><img class="skill__icon" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="" loading="lazy"><span class="skill__name">JavaScript</span></div></li>
+                                </ul>
+                            </div>
+                            <div class="skill-group">
+                                <h3 class="skill-group__title" data-reveal>Design &amp; Creative Tools</h3>
+                                <ul class="skill-list" data-stagger="pop">
+                                    <li><div class="skill"><img class="skill__icon" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/premierepro/premierepro-original.svg" alt="" loading="lazy"><span class="skill__name">Premiere Pro</span></div></li>
+                                    <li><div class="skill"><img class="skill__icon" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/aftereffects/aftereffects-original.svg" alt="" loading="lazy"><span class="skill__name">After Effects</span></div></li>
+                                    <li><div class="skill"><img class="skill__icon" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/photoshop/photoshop-original.svg" alt="" loading="lazy"><span class="skill__name">Photoshop</span></div></li>
+                                    <li><div class="skill"><img class="skill__icon" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/illustrator/illustrator-plain.svg" alt="" loading="lazy"><span class="skill__name">Illustrator</span></div></li>
+                                    <li><div class="skill"><img class="skill__icon" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg" alt="" loading="lazy"><span class="skill__name">Figma</span></div></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" id="contact">
+                <div class="section__head" data-stagger>
+                    <h2 class="section__title">Mari terhubung</h2>
+                    <p class="section__lead">Punya pertanyaan, tawaran proyek, atau ingin berkolaborasi? Hubungi saya lewat salah satu jalur di bawah ini.</p>
+                </div>
+
+                <div class="contact">
+                    <div class="contact__info">
+                        <p class="contact__text" data-reveal>Saya terbuka untuk diskusi soal pengembangan perangkat lunak, proyek IoT berbasis ESP32, videografi, maupun desain grafis.</p>
+                        <ul class="contact-list" data-stagger>
+                            <li class="contact-list__item">
+                                <a class="contact-link" href="mailto:paskalia.melisa@gmail.com">
+                                    <span class="contact-link__icon"><svg class="icon"><use href="#i-mail"/></svg></span>
+                                    <span class="contact-link__body">
+                                        <span class="contact-link__label">Email</span>
+                                        <span class="contact-link__value">paskalia.melisa@gmail.com</span>
+                                    </span>
+                                </a>
+                                <button class="copy" type="button" data-copy="paskalia.melisa@gmail.com" aria-label="Salin email">
+                                    <svg class="icon icon--sm"><use href="#i-copy"/></svg>
+                                </button>
+                            </li>
+                            <li class="contact-list__item">
+                                <a class="contact-link" href="https://linkedin.com/in/paskalia-melisa" target="_blank" rel="noopener">
+                                    <span class="contact-link__icon"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" alt="" loading="lazy"></span>
+                                    <span class="contact-link__body">
+                                        <span class="contact-link__label">LinkedIn</span>
+                                        <span class="contact-link__value">Paskalia Melisa</span>
+                                    </span>
+                                </a>
+                            </li>
+                            <li class="contact-list__item">
+                                <a class="contact-link" href="https://github.com/paskaliamelisa" target="_blank" rel="noopener">
+                                    <span class="contact-link__icon"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="" loading="lazy" data-invert></span>
+                                    <span class="contact-link__body">
+                                        <span class="contact-link__label">GitHub</span>
+                                        <span class="contact-link__value">@paskaliamelisa</span>
+                                    </span>
+                                </a>
+                            </li>
+                            <li class="contact-list__item">
+                                <a class="contact-link" href="https://instagram.com/paskaliamelisa" target="_blank" rel="noopener">
+                                    <span class="contact-link__icon"><svg class="icon"><use href="#i-instagram"/></svg></span>
+                                    <span class="contact-link__body">
+                                        <span class="contact-link__label">Instagram</span>
+                                        <span class="contact-link__value">@paskaliamelisa</span>
+                                    </span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <form class="form" id="contact-form" data-recipient="paskalia.melisa@gmail.com" data-reveal data-stagger>
+                        <div class="form__group">
+                            <label class="form__label" for="name">Nama lengkap</label>
+                            <input class="form__control" type="text" id="name" name="name" autocomplete="name" placeholder="Masukkan nama kamu" required>
+                        </div>
+                        <div class="form__group">
+                            <label class="form__label" for="email">Alamat email</label>
+                            <input class="form__control" type="email" id="email" name="email" autocomplete="email" placeholder="nama@email.com" required>
+                        </div>
+                        <div class="form__group">
+                            <label class="form__label" for="message">Pesan</label>
+                            <textarea class="form__control" id="message" name="message" rows="5" placeholder="Tuliskan pesan kamu di sini" required></textarea>
+                        </div>
+                        <button class="button button--primary form__submit" type="submit">Kirim pesan</button>
+                        <p class="form__status" id="form-status" aria-live="polite"></p>
+                    </form>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer" data-reveal>
+            <p>&copy; <span id="year"></span> Paskalia Melisa</p>
+        </footer>
+    </div>
+
+    <dialog class="lightbox" id="lightbox" aria-label="Pratinjau sertifikat">
+        <figure class="lightbox__figure">
+            <img class="lightbox__img" id="lightbox-img" alt="">
+            <figcaption class="lightbox__caption" id="lightbox-caption"></figcaption>
+        </figure>
+        <button class="lightbox__btn lightbox__btn--close" type="button" data-lightbox="close" aria-label="Tutup pratinjau">
+            <svg class="icon"><use href="#i-close"/></svg>
+        </button>
+        <button class="lightbox__btn lightbox__btn--prev" type="button" data-lightbox="prev" aria-label="Sertifikat sebelumnya">
+            <svg class="icon"><use href="#i-prev"/></svg>
+        </button>
+        <button class="lightbox__btn lightbox__btn--next" type="button" data-lightbox="next" aria-label="Sertifikat berikutnya">
+            <svg class="icon"><use href="#i-next"/></svg>
+        </button>
+    </dialog>
+</body>
+</html>
