@@ -368,7 +368,6 @@
             index = (nextIndex + items.length) % items.length;
             const targetItem = items[index];
             
-            // Ambil langsung dari atribut data-src atau dari tag img di dalam tombol
             const src = targetItem.dataset.src || targetItem.querySelector("img").getAttribute("src");
             const text = targetItem.dataset.caption || "";
 
@@ -823,20 +822,20 @@
             if (isDeleting) {
                 typedElement.textContent = currentWord.substring(0, charIndex - 1);
                 charIndex--;
-                typeSpeed = 50; // Lebih cepat saat menghapus
+                typeSpeed = 50;
             } else {
                 typedElement.textContent = currentWord.substring(0, charIndex + 1);
                 charIndex++;
-                typeSpeed = 100; // Kecepatan normal saat mengetik
+                typeSpeed = 100;
             }
 
             if (!isDeleting && charIndex === currentWord.length) {
                 isDeleting = true;
-                typeSpeed = 2000; // Jeda waktu sebelum mulai menghapus (2 detik)
+                typeSpeed = 2000;
             } else if (isDeleting && charIndex === 0) {
                 isDeleting = false;
                 wordIndex = (wordIndex + 1) % words.length;
-                typeSpeed = 500; // Jeda waktu sebelum mengetik kata baru
+                typeSpeed = 500;
             }
 
             setTimeout(type, typeSpeed);
